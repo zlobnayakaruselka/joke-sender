@@ -1,0 +1,28 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "http://localhost",
+  "type": "object",
+  "title": "Joke processing request schema",
+  "required": [
+    "joke_sender"
+  ],
+  "properties" : {
+    "joke_sender": {
+      "type": "object",
+      "required": [
+        "email",
+        "category"
+      ],
+      "properties": {
+        "email": {
+          "type": "string",
+          "pattern": "^(.+)@(.+)$"
+        },
+        "category": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    }
+  }
+}
