@@ -2,6 +2,7 @@
 
 namespace App\Services\JokeAPI;
 
+use App\Entity\EntityFactoryInterface;
 use App\Entity\JokeEntity;
 use App\Services\HttpClient\HttpClientInterface;
 use App\Services\JokeAPI\Exception\ApiErrorException;
@@ -11,7 +12,7 @@ use Psr\Http\Message\ResponseInterface;
 
 abstract class JokeAPI
 {
-    public const BASE_URL = '';
+    protected const BASE_URL = '';
     protected const API_NAME = '';
 
     protected const CATEGORIES_JSON_SCHEMA = '';
@@ -25,11 +26,19 @@ abstract class JokeAPI
      * @var JsonSchemaValidatorInterface
      */
     protected $jsonSchemaValidator;
+    /**
+     * @var EntityFactoryInterface
+     */
+    protected $entityFactory;
 
-    public function __construct(HttpClientInterface $httpClient, JsonSchemaValidatorInterface $jsonSchemaValidator)
-    {
+    public function __construct(
+        HttpClientInterface $httpClient,
+        JsonSchemaValidatorInterface $jsonSchemaValidator,
+        EntityFactoryInterface $entityFactory
+    ) {
         $this->httpClient = $httpClient;
         $this->jsonSchemaValidator = $jsonSchemaValidator;
+        $this->entityFactory = $entityFactory;
     }
 
     /**
@@ -63,15 +72,5 @@ abstract class JokeAPI
         if (!$this->jsonSchemaValidator->isValid($responseBody, realpath(__DIR__ . $jsonSchemaPath))) {
             throw new InvalidResponseException($this->jsonSchemaValidator->getErrors());
         }
-    }
-
-    protected function createJokeEntity(array $jokeData): JokeEntity
-    {
-        return new JokeEntity(
-            $jokeData['id'],
-            $jokeData['joke'],
-            $jokeData['categories'],
-            static::API_NAME
-        );
     }
 }

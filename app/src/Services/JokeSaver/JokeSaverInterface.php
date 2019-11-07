@@ -1,5 +1,5 @@
 <?php
-namespace App\Services\Saver;
+namespace App\Services\JokeSaver;
 
 use App\Entity\JokeEntity;
 

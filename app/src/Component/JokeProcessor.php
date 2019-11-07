@@ -5,7 +5,7 @@ use App\Services\JokeAPI\Exception\ApiErrorException;
 use App\Services\JokeAPI\Exception\InvalidResponseException;
 use App\Services\JokeAPI\JokeAPI;
 use App\Services\Mail\EmailBuilderInterface;
-use App\Services\Saver\JokeSaverInterface;
+use App\Services\JokeSaver\JokeSaverInterface;
 use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
 use Symfony\Component\Mailer\MailerInterface;
 

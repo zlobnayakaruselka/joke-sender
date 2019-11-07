@@ -1,7 +1,7 @@
 <?php
 namespace App\Controller\Exception;
 
-class InvalidRequestParametersException extends \Exception
+class InvalidRequestParametersException extends \InvalidArgumentException
 {
     /**
      * @var array

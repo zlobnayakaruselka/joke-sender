@@ -6,23 +6,32 @@ use Twig\Environment;
 
 class RandomJokeEmailBuilder implements EmailBuilderInterface
 {
-    private const TEMPLATE = 'mail/random_joke_with_category.html.twig';
     /**
      * @var Environment
      */
     private $twig;
+    /**
+     * @var string
+     */
+    private $template;
+    /**
+     * @var string
+     */
+    private $emailFrom;
 
-    public function __construct(Environment $twig)
+    public function __construct(Environment $twig, string $template, string $emailFrom)
     {
         $this->twig = $twig;
+        $this->template = $template;
+        $this->emailFrom = $emailFrom;
     }
 
     public function build(string $emailTo, string $category, string $joke): Email
     {
-        $html = $this->twig->render(self::TEMPLATE, ['joke' => $joke]);
+        $html = $this->twig->render($this->template, ['joke' => $joke]);
 
         $email = (new Email())
-            ->from('ya@gmail.com') // TODO в переменную
+            ->from($this->emailFrom)
             ->to($emailTo)
             ->subject("Random joke from the '$category' category")
             ->html($html);

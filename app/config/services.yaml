@@ -23,6 +23,11 @@ services:
         resource: '../src/Controller'
         tags: ['controller.service_arguments']
 
+    App\Controller\JokeController:
+        class: App\Controller\JokeController
+        arguments:
+            $jokeSenderTemplate: 'joke_sender.html.twig'
+
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
     GuzzleHttp\Client:
@@ -31,8 +36,19 @@ services:
     JsonSchema\Validator:
         class: JsonSchema\Validator
 
+    # App\Services
     App\Services\JokeAPI\JokeAPI:
         class: App\Services\JokeAPI\ChuckNorrisAPI
+
+    App\Services\Mail\EmailBuilderInterface:
+        class: App\Services\Mail\RandomJokeEmailBuilder
+        arguments:
+            $template: 'mail/random_joke_with_category.html.twig'
+            $emailFrom: 'ya@gmail.com'
+    # App\Services
+
+    App\Entity\EntityFactoryInterface:
+        class: App\Entity\EntityFactory
 
     App\EventListener\ExceptionListener:
         tags:

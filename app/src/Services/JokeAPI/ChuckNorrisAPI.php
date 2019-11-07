@@ -2,15 +2,12 @@
 namespace App\Services\JokeAPI;
 
 use App\Entity\JokeEntity;
-use App\Services\HttpClient\HttpClientInterface;
 use App\Services\JokeAPI\Exception\ApiErrorException;
 use App\Services\JokeAPI\Exception\InvalidResponseException;
-use App\Services\Validator\JsonSchemaValidatorInterface;
-use Psr\Http\Message\ResponseInterface;
 
 class ChuckNorrisAPI extends JokeAPI
 {
-    public const BASE_URL = 'https://api.icndb.com';
+    protected const BASE_URL = 'https://api.icndb.com';
     protected const API_NAME = 'chuck_norris_api';
 
     protected const CATEGORIES_JSON_SCHEMA = '/ResponseJsonSchema/ChuckNorrisApi/categories_schema.json';
@@ -47,6 +44,11 @@ class ChuckNorrisAPI extends JokeAPI
         $this->checkResponse($response, self::RANDOM_JOKE_JSON_SCHEMA);
         $responseBody = json_decode($response->getBody(), true);
 
-        return $this->createJokeEntity($responseBody['value']);
+        return $this->entityFactory->createJokeEntity(
+            $responseBody['value']['id'],
+            $responseBody['value']['joke'],
+            $responseBody['value']['categories'],
+            self::API_NAME
+        );
     }
 }
