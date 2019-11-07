@@ -1,5 +1,5 @@
 <?php
-namespace App\Services\Saver;
+namespace App\Services\JokeSaver;
 
 use App\Entity\JokeEntity;
 use App\Services\FileSystem\CsvFileServiceInterface;
@@ -16,19 +16,19 @@ class CsvJokeSaver implements JokeSaverInterface
     /**
      * @var CsvFileServiceInterface
      */
-    protected $csvFileWriter;
+    protected $csvFileService;
 
-    public function __construct(Filesystem $filesystem, CsvFileServiceInterface $csvFileWriter)
+    public function __construct(Filesystem $filesystem, CsvFileServiceInterface $csvFileService)
     {
         $this->fileSystem = $filesystem;
-        $this->csvFileWriter = $csvFileWriter;
+        $this->csvFileService = $csvFileService;
     }
 
     public function save(JokeEntity $jokeEntity, string $email):void
     {
         $this->prepareDirectory();
 
-        $this->csvFileWriter->saveRow(
+        $this->csvFileService->saveRow(
             $this->getFullFileName($jokeEntity->getApiName()),
             $this->createRowForCsv($jokeEntity, $email)
         );

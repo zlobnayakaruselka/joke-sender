@@ -14,28 +14,27 @@ class ExceptionListener
     {
         $exception = $event->getException();
 
-        // Customize your response object to display the exception details
-        $response = new Response();
-
-        if ($exception instanceof InvalidRequestParametersException) {
-            $response->setContent($exception->getMessage() . PHP_EOL . json_encode($exception->getErrors()));
-            $response->setStatusCode(Response::HTTP_UNPROCESSABLE_ENTITY);
-        } elseif (
-            $exception instanceof InvalidResponseException
-            | $exception instanceof ApiErrorException
-            | $exception instanceof \RuntimeException
-        ) {
-            $response->setContent('The joke API is in trouble right now. Try again later');
-            $response->setStatusCode(Response::HTTP_INTERNAL_SERVER_ERROR);
-        } elseif ($exception instanceof TransportExceptionInterface) {
-            $response->setContent('We can\'t send an email. Problems with the mail server. Try again later');
-            $response->setStatusCode(Response::HTTP_INTERNAL_SERVER_ERROR);
-        } else {
-            // \Exception
-            $response->setContent('Something was wrong');
-            $response->setStatusCode(Response::HTTP_INTERNAL_SERVER_ERROR);
+        switch (get_class($exception)) {
+            case InvalidRequestParametersException::class:
+                $response = $this->createResponse(
+                    Response::HTTP_UNPROCESSABLE_ENTITY,
+                    $exception->getMessage() . PHP_EOL . json_encode($exception->getErrors())
+                );
+                break;
+            case InvalidResponseException::class:
+            case ApiErrorException::class:
+            case TransportExceptionInterface::class:
+                $response = $this->createResponse(Response::HTTP_INTERNAL_SERVER_ERROR, $exception->getMessage());
+                break;
+            default:
+                $response = $this->createResponse(Response::HTTP_INTERNAL_SERVER_ERROR, 'Something was wrong');
         }
 
         $event->setResponse($response);
+    }
+
+    private function createResponse(int $statusCode, string $content): Response
+    {
+        return new Response($content, $statusCode);
     }
 }
