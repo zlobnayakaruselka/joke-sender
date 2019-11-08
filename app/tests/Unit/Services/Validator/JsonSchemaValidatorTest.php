@@ -42,6 +42,7 @@ class JsonSchemaValidatorTest extends TestCase
     /**
      * @dataProvider dataIsValid
      * @covers ::isValid
+     * @covers ::__construct
      */
     public function testIsValid(string $json, bool $jsonDecodeErrorExist, bool $isValid): void
     {

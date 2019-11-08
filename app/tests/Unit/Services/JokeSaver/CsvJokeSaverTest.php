@@ -66,6 +66,7 @@ class CsvJokeSaverTest extends TestCase
     /**
      * @dataProvider dataSave
      * @covers ::save
+     * @covers ::__construct
      * @covers ::prepareDirectory
      * @covers ::getDirectoryPath
      * @covers ::getFullFileName

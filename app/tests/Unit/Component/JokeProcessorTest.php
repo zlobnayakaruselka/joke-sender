@@ -65,6 +65,7 @@ class JokeProcessorTest extends TestCase
     }
 
     /**
+     * @covers ::__construct
      * @covers ::processJoke
      * @covers ::sendJokeToEmail
      */
