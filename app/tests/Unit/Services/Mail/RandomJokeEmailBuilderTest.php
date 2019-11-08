@@ -39,7 +39,8 @@ class RandomJokeEmailBuilderTest extends TestCase
     }
 
     /**
-     * @covers ::isValid
+     * @covers ::build
+     * @covers ::__construct
      */
     public function testBuild(): void
     {

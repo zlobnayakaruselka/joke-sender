@@ -66,8 +66,8 @@ class GetJokeByCategoryTest extends TestCase
     /**
      * @dataProvider dataGetJokeByCategory
      * @covers ::getJokeByCategory
+     * @covers ::__construct
      * @covers ::checkResponse
-     * @covers ::createJokeEntity
      */
     public function testGetJokeByCategory(string $category): void
     {
