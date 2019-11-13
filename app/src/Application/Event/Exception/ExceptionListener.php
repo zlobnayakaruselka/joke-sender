@@ -8,16 +8,16 @@ class ExceptionListener
     /**
      * @var ExceptionResponseFactory
      */
-    private $responseFormatter;
+    private $responseFactory;
 
-    public function __construct(ExceptionResponseFactory $responseFormatter)
+    public function __construct(ExceptionResponseFactory $responseFactory)
     {
-        $this->responseFormatter = $responseFormatter;
+        $this->responseFactory = $responseFactory;
     }
 
     public function onKernelException(ExceptionEvent $event): void
     {
-        $response = $this->responseFormatter->formatResponse($event->getException());
+        $response = $this->responseFactory->createResponse($event->getException());
 
         $event->setResponse($response);
     }

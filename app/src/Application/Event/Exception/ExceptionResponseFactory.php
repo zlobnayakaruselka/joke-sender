@@ -18,16 +18,19 @@ class ExceptionResponseFactory
         $this->exceptionErrorMap = $exceptionErrorMap;
     }
 
-    public function formatResponse(\Exception $exception): Response
+    public function createResponse(\Exception $exception): Response
     {
         $exceptionClass = get_class($exception);
 
         if (isset($this->exceptionErrorMap[$exceptionClass])) {
-            $message =  ($this->exceptionErrorMap[$exceptionClass]['add_exception_message'] ?? false)
-                ? $this->exceptionErrorMap[$exceptionClass]['message'] . PHP_EOL . $exception->getMessage()
-                :$this->exceptionErrorMap[$exceptionClass]['message'];
+            $message = $this->exceptionErrorMap[$exceptionClass]['message'] .
+                (
+                    ($this->exceptionErrorMap[$exceptionClass]['add_exception_message'] ?? false)
+                    ? PHP_EOL . $exception->getMessage()
+                    : ''
+                );
 
-            $statusCode = $this->exceptionErrorMap[$exceptionClass];
+            $statusCode = $this->exceptionErrorMap[$exceptionClass]['http_status_code'];
         }
 
         return new Response($message ?? self::DEFAULT_MESSAGE, $statusCode ?? self::DEFAULT_STATUS_CODE);
