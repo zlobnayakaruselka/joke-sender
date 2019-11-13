@@ -15,9 +15,6 @@ parameters:
         "App\\Components\\JokeApi\\Exception\\InvalidResponseException":
             http_status_code: 500
             message: "Error in Joke API. Try later"
-        "App\\Application\\FileSystem\\JokeSaver\\Exception\\InvalidDirectoryStructureException":
-            http_status_code: 500
-            message: "Internal server error"
         "App\\Components\\Services\\Decoder\\Exception\\DecodeErrorException":
             http_status_code: 500
             message: "Internal server error"

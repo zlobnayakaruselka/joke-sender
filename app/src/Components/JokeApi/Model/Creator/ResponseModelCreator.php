@@ -3,7 +3,7 @@ namespace App\Components\JokeApi\Model\Creator;
 
 use App\Components\JokeApi\Exception\ApiErrorException;
 use App\Components\JokeApi\Exception\InvalidResponseException;
-use App\Components\JokeApi\Model\Builder\ResponseModelBuilderInterface;
+use App\Components\JokeApi\Model\Creator\Builder\ResponseModelBuilderInterface;
 use App\Components\JokeApi\Model\ResponseModelInterface;
 use App\Components\Services\Decoder\DecoderInterface;
 use App\Components\Services\Validator\Object\ObjectValidatorInterface;
@@ -15,15 +15,15 @@ class ResponseModelCreator implements ResponseModelCreatorInterface
     /**
      * @var DecoderInterface
      */
-    protected $decoder;
+    private $decoder;
     /**
      * @var ObjectValidatorInterface
      */
-    protected $validator;
+    private $validator;
     /**
      * @var ResponseModelBuilderInterface
      */
-    protected $responseModelBuilder;
+    private $responseModelBuilder;
 
     public function __construct(
         DecoderInterface $decoder,
@@ -63,7 +63,7 @@ class ResponseModelCreator implements ResponseModelCreatorInterface
     private function checkStatusCode(ResponseInterface $response): void
     {
         if ($response->getStatusCode() !== Response::HTTP_OK) {
-            throw new ApiErrorException($response->getStatusCode(), $response->getBody()->getContents());
+            throw new ApiErrorException($response->getStatusCode(), $response->getBody());
         }
     }
 

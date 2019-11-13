@@ -44,7 +44,6 @@ class JokeController extends AbstractController
     */
     public function getCategories(): Response
     {
-        throw new \Exception('lol');
         $form = $this->createForm(
             JokeSenderType::class,
             new JokeSenderModel(),

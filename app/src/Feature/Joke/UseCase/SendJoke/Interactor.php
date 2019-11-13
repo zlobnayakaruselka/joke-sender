@@ -1,9 +1,9 @@
 <?php
 namespace App\Feature\Joke\UseCase\SendJoke;
 
-use App\Application\FileSystem\JokeSaver\JokeSaverInterface;
+use App\Application\FileSystem\Saver\JokeSaverInterface;
 use App\Application\Form\Model\JokeSenderModel;
-use App\Components\Entity\JokeEntity;
+use App\Feature\Joke\Entity\JokeEntity;
 use App\Components\JokeApi\JokeApiInterface;
 use App\Components\Services\Mail\EmailFactoryInterface;
 use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
@@ -22,21 +22,21 @@ class Interactor
     /**
      * @var EmailFactoryInterface
      */
-    protected $emailBuilder;
+    protected $emailFactory;
     /**
      * @var JokeSaverInterface
      */
     protected $jokeSaver;
 
     public function __construct(
-        EmailFactoryInterface $emailBuilder,
         JokeApiInterface $jokeApi,
+        EmailFactoryInterface $emailFactory,
         MailerInterface $mailer,
         JokeSaverInterface $jokeSaver
     ) {
         $this->jokeApi = $jokeApi;
         $this->mailer = $mailer;
-        $this->emailBuilder = $emailBuilder;
+        $this->emailFactory = $emailFactory;
         $this->jokeSaver = $jokeSaver;
     }
 
@@ -55,12 +55,12 @@ class Interactor
      */
     private function sendJokeToEmail(JokeSenderModel $jokeSenderModel, JokeEntity $jokeEntity): void
     {
-        $emailObject = $this->emailBuilder->createEmail(
+        $emailObject = $this->emailFactory->createEmail(
             $jokeSenderModel->getEmail(),
             $jokeSenderModel->getCategory(),
             $jokeEntity->getJoke()
         );
 
-        //ResponseModelCreator$this->mailer->send($emailObject);
+        $this->mailer->send($emailObject);
     }
 }

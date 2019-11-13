@@ -2,8 +2,8 @@
 
 namespace App\Components\JokeApi;
 
-use App\Components\Entity\Collection\JokeCategoryCollectionInterface;
-use App\Components\Entity\JokeEntity;
+use App\Feature\Joke\Entity\Collection\JokeCategoryCollectionInterface;
+use App\Feature\Joke\Entity\JokeEntity;
 
 interface JokeApiInterface
 {
