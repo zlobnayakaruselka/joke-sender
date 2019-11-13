@@ -4,6 +4,26 @@
 # Put parameters here that don't need to change on each machine where the app is deployed
 # https://symfony.com/doc/current/best_practices/configuration.html#application-related-configuration
 parameters:
+    exception_error_map:
+        "App\\Application\\Controller\\Exception\\InvalidRequestParametersException":
+            http_status_code: 422
+            message: "Unprocessable entity"
+            add_exception_message: true
+        "App\\Components\\JokeApi\\Exception\\ApiErrorException":
+            http_status_code: 500
+            message: "Error in Joke API. Try later"
+        "App\\Components\\JokeApi\\Exception\\InvalidResponseException":
+            http_status_code: 500
+            message: "Error in Joke API. Try later"
+        "App\\Application\\FileSystem\\JokeSaver\\Exception\\InvalidDirectoryStructureException":
+            http_status_code: 500
+            message: "Internal server error"
+        "App\\Components\\Services\\Decoder\\Exception\\DecodeErrorException":
+            http_status_code: 500
+            message: "Internal server error"
+        "Symfony\\Component\\Mailer\\Exception\\TransportExceptionInterface":
+            http_status_code: 500
+            message: "Internal server error"
 
 services:
     # default configuration for services in *this* file
@@ -19,12 +39,12 @@ services:
 
     # controllers are imported separately to make sure services can be injected
     # as action arguments even if you don't extend any base controller class
-    App\Controller\:
-        resource: '../src/Controller'
+    App\Application\Controller\:
+        resource: '../src/Application/Controller'
         tags: ['controller.service_arguments']
 
-    App\Controller\JokeController:
-        class: App\Controller\JokeController
+    App\Application\Controller\JokeController:
+        class: App\Application\Controller\JokeController
         arguments:
             $jokeSenderTemplate: 'joke_sender.html.twig'
 
@@ -33,23 +53,33 @@ services:
     GuzzleHttp\Client:
         class: GuzzleHttp\Client
 
-    JsonSchema\Validator:
-        class: JsonSchema\Validator
+    App\Components\JokeApi\ChuckNorrisJokeApi:
+        class: App\Components\JokeApi\ChuckNorrisJokeApi
+        arguments:
+            $apiName: "chuck_norris_api"
 
-    # App\Services
-    App\Services\JokeAPI\JokeAPI:
-        class: App\Services\JokeAPI\ChuckNorrisAPI
+    App\Components\Services\Validator\Object\SymfonyObjectValidator:
+        class: App\Components\Services\Validator\Object\SymfonyObjectValidator
+        arguments:
+            $validator: '@Symfony\Component\Validator\Validator\ValidatorInterface'
 
-    App\Services\Mail\EmailBuilderInterface:
-        class: App\Services\Mail\RandomJokeEmailBuilder
+    App\Components\Services\Mail\EmailFactoryInterface:
+        class: App\Components\Services\Mail\RandomJokeEmailFactory
         arguments:
             $template: 'mail/random_joke_with_category.html.twig'
             $emailFrom: 'ya@gmail.com'
-    # App\Services
 
-    App\Entity\EntityFactoryInterface:
-        class: App\Entity\EntityFactory
+    App\Components\Entity\EntityFactoryInterface:
+        class: App\Components\Entity\EntityFactory
 
-    App\EventListener\ExceptionListener:
+    Symfony\Component\Validator\Validator\ValidatorInterface:
+        factory: ['Symfony\Component\Validator\Validation', 'createValidator']
+
+    App\Application\Event\Exception\ExceptionResponseFactory:
+        class: App\Application\Event\Exception\ExceptionResponseFactory
+        arguments:
+            $exceptionErrorMap: '%exception_error_map%'
+
+    App\Application\Event\Exception\ExceptionListener:
         tags:
             - { name: kernel.event_listener, event: kernel.exception }
